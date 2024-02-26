@@ -1,0 +1,2 @@
+npm i uuid to generate random room id
+npm i react-hot-toast this is done to pop up toast whenever something is executed like succesully created a new room 
