@@ -21,3 +21,14 @@ body {
   /* hover krne pe transition hoga */
   transition: all 0.3s ease-in-out;
 }
+
+.mainWrap {
+  grid-template-columns: 230px 1fr;
+}
+
+.CodeMirror {
+  min-height: 100%;
+  font-size: 15px;
+  line-height: 1.6;
+  padding-top: 20px;
+}

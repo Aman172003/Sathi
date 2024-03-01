@@ -1,2 +1,9 @@
 npm i uuid to generate random room id
 npm i react-hot-toast this is done to pop up toast whenever something is executed like succesully created a new room 
+npm i react-avatar krne se <Avatar/> component load ho jaega user ka
+npm i codemirror krenge, isse text editor integrate hoga
+
+iss project ko deploy krne se pehle 
+npm build krke isko production ke liye ready kr lena
+uske baad server.js me kucchh middlewares likh lena 
+uske baad pockage.json me jaake start ko modify krna kyuki jab hum deploy krte hai to deploying site automatically start ko run krti hai

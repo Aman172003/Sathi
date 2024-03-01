@@ -45,6 +45,12 @@ const Home = () => {
     });
   };
 
+  const handleInputEnter = (e) => {
+    if (e.code === "Enter") {
+      joinRoom();
+    }
+  };
+
   return (
     <div className="h-screen flex justify-center items-center text-[#fff]">
       {/* form */}
@@ -62,6 +68,8 @@ const Home = () => {
             placeholder="ROOM ID"
             onChange={onChangeId}
             value={roomId}
+            // agar enter bhi marenge to join ho jaega
+            onKeyUp={handleInputEnter}
           />
           <input
             type="text"
@@ -69,6 +77,7 @@ const Home = () => {
             placeholder="USERNAME"
             onChange={onChangeUser}
             value={username}
+            onKeyUp={handleInputEnter}
           />
           <button
             className="btn text-black bg-[#4aee88] w-[100px] ml-auto hover:bg-[#2b824c]"
