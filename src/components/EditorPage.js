@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-
 import Client from "./Client";
 import Editor from "./Editor";
 import { initSocket } from "./Socket";
@@ -23,6 +22,8 @@ const EditorPage = () => {
   useEffect(() => {
     const init = async () => {
       socketRef.current = await initSocket();
+      socketRef.current.on("connect_error", (err) => handleErrors(err));
+      socketRef.current.on("connect_failed", (err) => handleErrors(err));
 
       function handleErrors(e) {
         console.log("Socket error", e);
@@ -30,8 +31,6 @@ const EditorPage = () => {
         reactNavigator("/");
       }
 
-      socketRef.current.on("connect_error", (err) => handleErrors(err));
-      socketRef.current.on("connect_failed", (err) => handleErrors(err));
       // hum join req emit krenge
       socketRef.current.emit(ACTIONS.JOIN, {
         roomId,
@@ -70,19 +69,13 @@ const EditorPage = () => {
     // humesha listenners ko clean krna chahiye htane ke baad
     // jaise hi function unmount ho jaega uska cleaning ho jaega
     return () => {
-      return () => {
-        if (socketRef.current) {
-          socketRef.current.disconnect();
-          socketRef.current.off(ACTIONS.JOINED);
-          socketRef.current.off(ACTIONS.DISCONNECTED);
-        }
-      };
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current.off(ACTIONS.JOINED);
+        socketRef.current.off(ACTIONS.DISCONNECTED);
+      }
     };
   }, []);
-
-  if (!location.state) {
-    return <Navigate to="/" />;
-  }
 
   async function copyRoomId() {
     try {
@@ -94,19 +87,24 @@ const EditorPage = () => {
     }
   }
 
-  async function leaveRoom() {
+  function leaveRoom() {
     reactNavigator("/");
   }
+
+  if (!location.state) {
+    return <Navigate to="/" />;
+  }
+
   return (
     // mainwrap class banake humne normal css se styling di hai kyuki wo styling tailind me nhi thi
     <div className="grid mainWrap h-screen">
       <div className="bg-[#1c1e29] p-4 text-[#fff] flex flex-col">
         <div className="flex-1">
           <div className="border-b border-solid border-[#424242] pb-[10px]">
-            <img className="h-[60px]" src="/code-sync.png" alt="logo" />
+            <img className="h-[50px]" src="/sathi.png" alt="logo" />
           </div>
           <h3 className="mt-3">Connected</h3>
-          <div className="flex items-center justify-between flex-wrap">
+          <div className="flex items-center flex-wrap gap-5">
             {clients.map((client) => {
               return (
                 <Client key={client.socketId} username={client.username} />
@@ -121,7 +119,7 @@ const EditorPage = () => {
           Copy ROOM ID
         </button>
         <button
-          className="btn text-black mt-5 bg-[#4aed88] w-full hover:bg-[#2b824c]"
+          className="btn text-black mt-5 bg-[#09fcf6] w-full hover:bg-[#09cffc]"
           onClick={leaveRoom}
         >
           Leave

@@ -5,17 +5,17 @@ const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
 const ACTIONS = require("./src/actions");
-// const path = require("path");
-const { disconnect } = require("process");
+const path = require("path");
 const server = http.createServer(app);
+
 const io = new Server(server);
 
 // jab bhi humare server par request aaega to  turant build folder ka html file render ho jaega
-// app.use(express.static("build"));
+app.use(express.static("build"));
 // jab bhi kuchh load hoga ya phir koi unknown link pe jaega to index file render ho jaega jo react se link hai to koi bhi error nhi aaega
-// app.use((req, res, next) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 const userSocketMap = {};
 
@@ -36,7 +36,7 @@ function getAllConnectedClients(roomId) {
 // jaise hi koi server humare socket server se judega
 // socket hum bnaenge socket.js file me
 io.on("connection", (socket) => {
-  console.log("Socket Connected", socket.id);
+  console.log("Socket Connected ", socket.id);
   // jab koi roomId aur username ke sath server par join hoga tab
   socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
     userSocketMap[socket.id] = username;

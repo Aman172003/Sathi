@@ -30,7 +30,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         const code = instance.getValue();
         onCodeChange(code);
         // setValue ek method hai
-        if (origin != "setValue") {
+        if (origin !== "setValue") {
           socketRef.current.emit(ACTIONS.CODE_CHANGE, {
             roomId,
             code,
@@ -55,7 +55,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
       if (socketRef.current) socketRef.current.off(ACTIONS.CODE_CHANGE);
     };
   }, [socketRef.current]);
-  return <textarea className="" id="realtimeEditor"></textarea>;
+  return <textarea className="h-full" id="realtimeEditor"></textarea>;
 };
 
 export default Editor;

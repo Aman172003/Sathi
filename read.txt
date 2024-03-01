@@ -4,6 +4,12 @@ npm i react-avatar krne se <Avatar/> component load ho jaega user ka
 npm i codemirror krenge, isse text editor integrate hoga
 
 iss project ko deploy krne se pehle 
-npm build krke isko production ke liye ready kr lena
+npm run build krke isko production ke liye ready kr lena
 uske baad server.js me kucchh middlewares likh lena 
 uske baad pockage.json me jaake start ko modify krna kyuki jab hum deploy krte hai to deploying site automatically start ko run krti hai
+production me REACT_APP_BACKEND_URL ka key / denge
+  // below line script me add krenge jab production ke liye use krenge
+  from
+  "start": "react-scripts start",
+  to
+  // "start": "npm build && npm server:prod",

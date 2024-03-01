@@ -8,7 +8,7 @@ function App() {
   const createToast = {
     success: {
       theme: {
-        primary: "#4aed88",
+        primary: "#09fcf6",
       },
     },
   };
