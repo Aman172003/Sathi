@@ -98,7 +98,7 @@ const EditorPage = () => {
   return (
     // mainwrap class banake humne normal css se styling di hai kyuki wo styling tailind me nhi thi
     <div className="grid mainWrap h-screen">
-      <div className="bg-[#1c1e29] p-4 text-[#fff] flex flex-col">
+      <div className="bg-[#000d0c] p-4 text-[#fff] flex flex-col">
         <div className="flex-1">
           <div className="border-b border-solid border-[#424242] pb-[10px]">
             <img className="h-[50px]" src="/sathi.png" alt="logo" />

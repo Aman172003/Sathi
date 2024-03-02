@@ -2,13 +2,14 @@ import React, { useEffect, useRef } from "react";
 import Codemirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/mode/javascript/javascript";
-import "codemirror/theme/dracula.css";
+import "codemirror/theme/ayu-dark.css";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../actions";
 
 const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const editorRef = useRef(null);
+
   useEffect(() => {
     async function init() {
       // Create a new CodeMirror instance when the component mounts
@@ -16,7 +17,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         document.getElementById("realtimeEditor"),
         {
           mode: { name: "javascript", json: true },
-          theme: "dracula",
+          theme: "ayu-dark",
           autoCloseTags: true,
           autoCloseBrackets: true,
           lineNumbers: true,
