@@ -13,3 +13,5 @@ production me REACT_APP_BACKEND_URL ka key / denge
   "start": "react-scripts start",
   to
   // "start": "npm build && npm server:prod",
+
+website me animation ke lie npm i gsap krna pdega
