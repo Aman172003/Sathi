@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+var cors = require("cors");
 
 // humare home server ko web socket server se connect kr dega
 const http = require("http");
@@ -10,6 +11,7 @@ const server = http.createServer(app);
 
 const io = new Server(server);
 
+app.use(cors());
 // jab bhi humare server par request aaega to  turant build folder ka html file render ho jaega
 app.use(express.static("build"));
 // jab bhi kuchh load hoga ya phir koi unknown link pe jaega to index file render ho jaega jo react se link hai to koi bhi error nhi aaega
