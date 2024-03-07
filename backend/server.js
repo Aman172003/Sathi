@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const app = express();
 var cors = require("cors");
@@ -5,7 +9,7 @@ var cors = require("cors");
 // humare home server ko web socket server se connect kr dega
 const http = require("http");
 const { Server } = require("socket.io");
-const ACTIONS = require("./src/actions");
+const ACTIONS = require("../frontend/src/actions");
 const path = require("path");
 const server = http.createServer(app);
 
