@@ -82,7 +82,7 @@ const Home = () => {
           />
           <input
             type="text"
-            className=" text-black font-medium p-[10px] rounded-[5px] outline-none border-none mb-[14px] bg-[#eee]   text-[14px]"
+            className=" text-black font-medium p-[10px] rounded-[5px] outline-none border-none mb-[14px] bg-[#eee] text-[14px]"
             placeholder="USERNAME"
             onChange={onChangeUser}
             value={username}

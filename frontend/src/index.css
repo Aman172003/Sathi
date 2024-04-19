@@ -22,13 +22,28 @@ body {
   transition: all 0.3s ease-in-out;
 }
 
-.mainWrap {
+/* .mainWrap {
   grid-template-columns: 230px 1fr;
-}
+} */
 
 .CodeMirror {
   min-height: 100%;
   font-size: 15px;
   line-height: 1.6;
-  padding-top: 20px;
+  padding-top: 5px;
+}
+
+.liItems {
+  margin-bottom: 5px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.liItems:hover {
+  transform: scale(0.9);
+  transition: transform 0.3s ease-in-out;
+}
+
+.active {
+  background-color: #cbd5e1;
 }
