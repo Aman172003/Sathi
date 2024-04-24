@@ -10,6 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #1c1e29;
+  background: whitesmoke;
 }
 
 .btn {
@@ -46,4 +47,68 @@ body {
 
 .active {
   background-color: #cbd5e1;
+}
+
+/* chat css */
+
+.open-btn {
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px 0px,
+    rgba(17, 17, 26, 0.05) 0px 8px 32px 0px;
+}
+
+/* .chat-popup {
+  bottom: 16px;
+  right: 16px;
+  position: fixed;
+  z-index: 9;
+  width: 320px;
+  display: none;
+} */
+
+.form-container {
+  background: #0a0e13;
+  border-radius: 10px 10px 6px 6px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px 0px,
+    rgba(17, 17, 26, 0.05) 0px 8px 32px 0px;
+}
+
+.chat-window-head {
+  background: #09fcf6;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.msg-container {
+  padding: 12px 10px;
+  height: 300px;
+  margin: 10px 0;
+}
+
+.msg {
+  background-color: #363c3e;
+  padding: 10px 16px;
+  border-radius: 15px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-box {
+  background: #0a0e13;
+}
+
+.send-btn,
+.clickbtn {
+  width: 60px;
+  background: #09fcf6;
+  color: black;
+  border-radius: 0 10px 10px 0;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s;
+}
+
+.btn:hover,
+.open-btn:hover {
+  opacity: 0.9;
 }

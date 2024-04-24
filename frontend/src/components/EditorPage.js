@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Client from "./Client";
 import Editor from "./Editor";
+import Chat from "./Chat";
 import { initSocket } from "./Socket";
 import { FaPython, FaJava, FaJs, FaGofore } from "react-icons/fa";
 import { SiCplusplus } from "react-icons/si";
@@ -83,14 +84,6 @@ const EditorPage = () => {
         });
       });
     };
-    // Listening for messages
-    // socketRef.current.on(ACTIONS.SEND_MESSAGE, ({ message }) => {
-    //   const chatWindow = document.getElementById("chatWindow");
-    //   var currText = chatWindow.value;
-    //   currText += message;
-    //   chatWindow.value = currText;
-    //   chatWindow.scrollTop = chatWindow.scrollHeight;
-    // });
 
     init();
     // humesha listenners ko clean krna chahiye htane ke baad
@@ -100,7 +93,6 @@ const EditorPage = () => {
         socketRef.current.off(ACTIONS.JOINED);
 
         socketRef.current.off(ACTIONS.DISCONNECTED);
-        // socketRef.current.off(ACTIONS.SEND_MESSAGE);
         socketRef.current.disconnect();
       }
     };
@@ -153,12 +145,6 @@ const EditorPage = () => {
     outputLabel.classList.add("clickedLabel");
   };
 
-  // const handleInputEnter = (key) => {
-  //   if (key.code === "Enter") {
-  //     sendMessage();
-  //   }
-  // };
-
   const onInputChange = (e) => {
     setInput(e.target.value);
   };
@@ -202,20 +188,6 @@ const EditorPage = () => {
     setLang(language);
     console.log(language);
   };
-
-  // const sendMessage = () => {
-  //   if (document.getElementById("inputBox").value === "") return;
-  //   var message = `> ${location.state.username}:\n${
-  //     document.getElementById("inputBox").value
-  //   }\n`;
-  //   const chatWindow = document.getElementById("chatWindow");
-  //   var currText = chatWindow.value;
-  //   currText += message;
-  //   chatWindow.value = currText;
-  //   chatWindow.scrollTop = chatWindow.scrollHeight;
-  //   document.getElementById("inputBox").value = "";
-  //   socketRef.current.emit(ACTIONS.SEND_MESSAGE, { roomId, message });
-  // };
 
   return (
     <div className="mainWrap h-screen relative">
@@ -277,7 +249,7 @@ const EditorPage = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="sidebar w-fit p-3 border-r border-t mt-[2px] bg-black">
+        <div className="sidebar w-fit p-3 border-r border-t bg-black">
           <ul>
             <div className="liItems">
               <li onClick={() => handleClick("cpp17")}>
@@ -386,6 +358,11 @@ const EditorPage = () => {
           </div>
         </div>
       </div>
+      <Chat
+        roomId={roomId}
+        socketRef={socketRef}
+        username={location.state?.username}
+      />
     </div>
   );
 };
