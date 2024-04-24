@@ -118,7 +118,7 @@ const Chat = ({ socketRef, roomId, username }) => {
           <div className="chat-window-head flex justify-between px-[16px] py-[14px]">
             <h4 className="text-black font-[500] cursor-pointer">
               <i className="fa fa-comment text-[24px] mr-[10px] cursor-pointer"></i>
-              Chat Window
+              Chat Box
             </h4>
             <span
               className="cursor-pointer text-black"
