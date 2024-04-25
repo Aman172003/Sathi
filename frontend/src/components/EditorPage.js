@@ -250,8 +250,10 @@ const EditorPage = () => {
           </div>
         </div>
       </div>
+
+      {/* yaha tak */}
       <div className="flex">
-        <div className="sidebar w-fit md:p-2 p-1 border-r border-t bg-black">
+        <div className="sidebar w-fit md:p-2 p-1 border-r border-t border-zinc-400 bg-black">
           <ul>
             <div className="liItems">
               <li
@@ -345,21 +347,21 @@ const EditorPage = () => {
             </div>
           </ul>
         </div>
-        <div className="flex w-full">
-          <div className="flex flex-col overflow-x-scroll overflow-y-scroll md:w-2/3 w-full h-screen">
-            <div className="flex h-14 text-xl text-white bg-black justify-between items-center p-2 border border-l-0">
+        <div className="flex flex-wrap w-full">
+          <div className="flex flex-col overflow-x-scroll overflow-y-scroll md:w-2/3 w-full h-screen clear-both">
+            <div className="flex h-14 text-xl text-white bg-black justify-between items-center p-2 border border-l-0 border-zinc-400">
               <div className="">Code</div>
               <div>
                 <label
                   onClick={runCode}
                   id="runLabel"
-                  className="bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer"
+                  className="bg-white text-black border-solid border-zinc-400 px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer"
                 >
                   Run Code
                 </label>
               </div>
             </div>
-            <div className="editorWrap bg-white border-r flex-1">
+            <div className="editorWrap bg-white border-r border-zinc-400 flex-1">
               <Editor
                 socketRef={socketRef}
                 roomId={roomId}
@@ -371,11 +373,11 @@ const EditorPage = () => {
             </div>
           </div>
 
-          <div className="h-screen overflow-y-hidden hidden md:flex flex-col md:w-1/3 w-full">
-            <div className="h-14 p-2 items-center IO-container text-xl text-white bg-black border border-l-0 flex">
+          <div className="h-screen overflow-y-hidden left-0 top-full absolute md:relative flex flex-col md:w-1/3 w-full md:top-auto top">
+            <div className="h-14 p-2 items-center IO-container text-xl text-white bg-black border border-l-0 border-zinc-400 flex">
               <label
                 id="inputLabel"
-                className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer ${
+                className={`bg-white text-black border-solid px-3 py-2 rounded-md border-zinc-400 text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer ${
                   activeTab === "input" ? "active" : ""
                 }`}
                 onClick={inputClicked}
@@ -385,7 +387,7 @@ const EditorPage = () => {
               <label
                 ref={outputRef}
                 id="outputLabel"
-                className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer mx-2 ${
+                className={`bg-white text-black border-solid border-zinc-400 px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer mx-2 ${
                   activeTab === "output" ? "active" : ""
                 }`}
                 onClick={outputClicked}
@@ -399,45 +401,11 @@ const EditorPage = () => {
                 id="input"
                 value={input}
                 onChange={onInputChange}
-                className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-full p-2 text-white border-r"
+                className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-full p-2 text-white border-r border-zinc-400"
                 placeholder="Enter your input here"
               ></textarea>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="h-screen overflow-hidden  flex md:hidden flex-col md:w-1/3 w-full">
-        <div className="h-14 p-2 items-center IO-container text-xl text-white bg-black border border-l-0 flex">
-          <label
-            id="inputLabel"
-            className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer ${
-              activeTab === "input" ? "active" : ""
-            }`}
-            onClick={inputClicked}
-          >
-            Input
-          </label>
-          <label
-            ref={outputRef}
-            id="outputLabel"
-            className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer mx-2 ${
-              activeTab === "output" ? "active" : ""
-            }`}
-            onClick={outputClicked}
-          >
-            Output
-          </label>
-        </div>
-
-        <div className="flex-1">
-          <textarea
-            id="input"
-            value={input}
-            onChange={onInputChange}
-            className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-full p-2 text-white border-r"
-            placeholder="Enter your input here"
-          ></textarea>
         </div>
       </div>
 
