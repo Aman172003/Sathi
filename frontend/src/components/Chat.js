@@ -96,7 +96,7 @@ const Chat = ({ socketRef, roomId, username }) => {
   return (
     <>
       <button
-        className="open-btn bg-[#09fcf6] text-black px-[9px] py-[12px] border rounded-[50px] border-none cursor-pointer fixed text-[16px] mr-[14px] flex items-center justify-center transition-all duration-300 bottom-6 right-[30px] w-[280px]"
+        className="open-btn bg-[#09fcf6] text-black px-[9px] py-[12px] border rounded-[50px] border-none cursor-pointer fixed text-[16px] mr-[14px] flex items-center justify-center transition-all duration-300 bottom-6 right-[30px] md:w-[280px] w-[150px]"
         onClick={openChatWindow}
       >
         <i className="fa fa-comment text-[28px] mr-5"></i>chat
@@ -129,23 +129,27 @@ const Chat = ({ socketRef, roomId, username }) => {
           </div>
 
           <div className="msg-container overflow-scroll">
-            {messages.map((msg, index) => (
-              <div key={index} className="msg mb-4">
-                <p
-                  className="text-xs text-white"
-                  style={{ maxWidth: "90%", wordWrap: "break-word" }}
-                >
-                  <strong
-                    className="text-[#DAC0A3]"
-                    style={{ color: msg.color }}
+            {messages.length === 0 ? (
+              <p className="text-[grey] text-sm">No messages to display</p>
+            ) : (
+              messages.map((msg, index) => (
+                <div key={index} className="msg mb-4">
+                  <p
+                    className="text-xs text-white"
+                    style={{ maxWidth: "90%", wordWrap: "break-word" }}
                   >
-                    {msg.sender}:
-                  </strong>{" "}
-                  {msg.content}
-                </p>
-                <span className="text-[10px] text-[grey]">{msg.time}</span>
-              </div>
-            ))}
+                    <strong
+                      className="text-[#DAC0A3]"
+                      style={{ color: msg.color }}
+                    >
+                      {msg.sender}:
+                    </strong>{" "}
+                    {msg.content}
+                  </p>
+                  <span className="text-[10px] text-[grey]">{msg.time}</span>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="flex h-12 mb-4 px-[14px]">

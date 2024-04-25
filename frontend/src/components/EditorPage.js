@@ -58,6 +58,11 @@ const EditorPage = () => {
         //  "?" isliye hai kyuki .username agar present nhi hoga to error throw nhi krega
         username: location.state?.username,
       });
+
+      // socketRef.current.emit(ACTIONS.LANGUAGE_CHANGED, {
+      //   lang,
+      // });
+
       // listening for joined event
       socketRef.current.on(
         ACTIONS.JOINED,
@@ -91,7 +96,6 @@ const EditorPage = () => {
     return () => {
       if (socketRef.current) {
         socketRef.current.off(ACTIONS.JOINED);
-
         socketRef.current.off(ACTIONS.DISCONNECTED);
         socketRef.current.disconnect();
       }
@@ -183,12 +187,10 @@ const EditorPage = () => {
       console.error(error);
     }
   };
-
   const handleClick = (language) => {
     setLang(language);
     console.log(language);
   };
-
   return (
     <div className="mainWrap h-screen relative">
       <div className="bg-black p-4 text-[#fff] flex justify-between items-center md:gap-16">
@@ -249,58 +251,103 @@ const EditorPage = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="sidebar w-fit p-3 border-r border-t bg-black">
+        <div className="sidebar w-fit md:p-2 p-1 border-r border-t bg-black">
           <ul>
             <div className="liItems">
-              <li onClick={() => handleClick("cpp17")}>
+              <li
+                className={`button ${
+                  lang === "cpp17" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("cpp17")}
+              >
                 <SiCplusplus color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("c")}>
+              <li
+                className={`button ${
+                  lang === "c" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("c")}
+              >
                 <TbLetterC color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("python3")}>
+              <li
+                className={`button ${
+                  lang === "python3" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("python3")}
+              >
                 <FaPython color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("java")}>
+              <li
+                className={`button ${
+                  lang === "java" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("java")}
+              >
                 <FaJava color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("javascript")}>
+              <li
+                className={`button ${
+                  lang === "javascript" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("javascript")}
+              >
                 <FaJs color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("go")}>
+              <li
+                className={`button ${
+                  lang === "go" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("go")}
+              >
                 <FaGofore color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("ruby")}>
+              <li
+                className={`button ${
+                  lang === "ruby" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("ruby")}
+              >
                 <DiRuby color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("rust")}>
+              <li
+                className={`button ${
+                  lang === "rust" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("rust")}
+              >
                 <DiRust color="white" size={30} />
               </li>
             </div>
             <div className="liItems">
-              <li onClick={() => handleClick("dart")}>
+              <li
+                className={`button ${
+                  lang === "dart" ? "bg-gray-600" : ""
+                } rounded p-2`}
+                onClick={() => handleClick("dart")}
+              >
                 <DiDart color="white" size={30} />
               </li>
             </div>
           </ul>
         </div>
-        <div className="flex flex-col w-full">
-          <div className="flex h-12 text-xl text-white justify-center items-center bg-black">
-            <div className="flex justify-between items-center w-2/3 p-2 border  border-l-0">
+        <div className="flex w-full">
+          <div className="flex flex-col overflow-x-scroll overflow-y-scroll md:w-2/3 w-full h-screen">
+            <div className="flex h-14 text-xl text-white bg-black justify-between items-center p-2 border border-l-0">
               <div className="">Code</div>
               <div>
                 <label
@@ -312,8 +359,20 @@ const EditorPage = () => {
                 </label>
               </div>
             </div>
+            <div className="editorWrap bg-white border-r flex-1">
+              <Editor
+                socketRef={socketRef}
+                roomId={roomId}
+                onCodeChange={(code) => {
+                  codeRef.current = code;
+                  setCode(code);
+                }}
+              />
+            </div>
+          </div>
 
-            <div className="p-2 IO-container w-1/3 border  border-l-0">
+          <div className="h-screen overflow-y-hidden hidden md:flex flex-col md:w-1/3 w-full">
+            <div className="h-14 p-2 items-center IO-container text-xl text-white bg-black border border-l-0 flex">
               <label
                 id="inputLabel"
                 className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer ${
@@ -334,30 +393,54 @@ const EditorPage = () => {
                 Output
               </label>
             </div>
-          </div>
-          <div className="h-screen overflow-y-hidden flex">
-            <div className="editorWrap bg-white w-2/3 border-r">
-              <Editor
-                socketRef={socketRef}
-                roomId={roomId}
-                onCodeChange={(code) => {
-                  codeRef.current = code;
-                  setCode(code);
-                }}
-              />
-            </div>
-            <div className="w-1/3">
+
+            <div className="flex-1">
               <textarea
                 id="input"
                 value={input}
                 onChange={onInputChange}
-                className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-screen p-2 text-white border-r"
+                className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-full p-2 text-white border-r"
                 placeholder="Enter your input here"
               ></textarea>
             </div>
           </div>
         </div>
       </div>
+
+      <div className="h-screen overflow-hidden  flex md:hidden flex-col md:w-1/3 w-full">
+        <div className="h-14 p-2 items-center IO-container text-xl text-white bg-black border border-l-0 flex">
+          <label
+            id="inputLabel"
+            className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer ${
+              activeTab === "input" ? "active" : ""
+            }`}
+            onClick={inputClicked}
+          >
+            Input
+          </label>
+          <label
+            ref={outputRef}
+            id="outputLabel"
+            className={`bg-white text-black border-solid px-3 py-2 rounded-md text-center text-sm hover:bg-slate-300 transition duration-300 ease-in-out cursor-pointer mx-2 ${
+              activeTab === "output" ? "active" : ""
+            }`}
+            onClick={outputClicked}
+          >
+            Output
+          </label>
+        </div>
+
+        <div className="flex-1">
+          <textarea
+            id="input"
+            value={input}
+            onChange={onInputChange}
+            className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-full p-2 text-white border-r"
+            placeholder="Enter your input here"
+          ></textarea>
+        </div>
+      </div>
+
       <Chat
         roomId={roomId}
         socketRef={socketRef}
