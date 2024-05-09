@@ -30,7 +30,6 @@ const EditorPage = () => {
   const [activeTab, setActiveTab] = useState("input");
   const [lang, setLang] = useState("cpp17");
   const [code, setCode] = useState("");
-  const [output, setOutput] = useState("");
   const [input, setInput] = useState("");
 
   const toggleButton = () => {
