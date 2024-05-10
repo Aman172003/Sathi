@@ -190,11 +190,20 @@ const EditorPage = () => {
     setLang(language);
     console.log(language);
   };
+
+  const onImgClick = () => {
+    reactNavigator("/");
+  };
   return (
     <div className="mainWrap h-screen relative">
       <div className="bg-black p-4 text-[#fff] flex justify-between items-center md:gap-16">
         <div>
-          <img className="h-[50px]" src="/sathi.png" alt="logo" />
+          <img
+            className="h-[50px] cursor-pointer"
+            src="/sathi.png"
+            alt="logo"
+            onClick={onImgClick}
+          />
         </div>
 
         <div className="flex items-center md:hidden">
@@ -219,7 +228,7 @@ const EditorPage = () => {
         <div
           className={`md:flex md:items-center md:gap-96 ${
             items ? "absolute" : "hidden"
-          } mt-72 md:mt-auto bg-black w-full md:w-auto md:mx-0 -mx-4 h-60 md:h-auto md:overflow-y-auto overflow-y-scroll z-10`}
+          } mt-72 md:mt-auto bg-black w-full md:w-auto md:mx-0 -mx-4 h-60 md:h-auto overflow-y-auto z-10`}
         >
           <div
             className={`flex md:items-center md:gap-1 flex-col md:flex-row items-start justify-center p-3 md:p-0 md:mt-0 mt-2`}
@@ -347,7 +356,7 @@ const EditorPage = () => {
           </ul>
         </div>
         <div className="flex flex-wrap w-full">
-          <div className="flex flex-col overflow-x-scroll overflow-y-scroll md:w-2/3 w-full h-screen clear-both">
+          <div className="flex flex-col overflow-auto md:w-2/3 w-full h-screen clear-both">
             <div className="flex h-14 text-xl text-white bg-black justify-between items-center p-2 border border-l-0 border-zinc-400">
               <div className="">Code</div>
               <div>

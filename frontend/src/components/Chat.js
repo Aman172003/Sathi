@@ -128,7 +128,7 @@ const Chat = ({ socketRef, roomId, username }) => {
             </span>
           </div>
 
-          <div className="msg-container overflow-scroll">
+          <div className="msg-container overflow-auto">
             {messages.length === 0 ? (
               <p className="text-[grey] text-sm">No messages to display</p>
             ) : (
