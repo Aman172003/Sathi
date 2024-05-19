@@ -4,7 +4,9 @@
 
 body {
   margin: 0;
-  font-family: "Teachers", sans-serif;
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 500;
+  font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #1c1e29;
