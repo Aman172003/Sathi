@@ -86,6 +86,11 @@ io.on("connection", (socket) => {
     socket.in(roomId).emit(ACTIONS.SYNC_OUTPUT, { output });
   });
 
+  socket.on(ACTIONS.RUN_CODE, ({ roomId, output }) => {
+    // Emit the output to all clients in the room
+    socket.in(roomId).emit(ACTIONS.DISPLAY_OUTPUT, { output });
+  });
+
   // below tab run hoga jab koi client room chhod ke chala jaaye ya browser band kr de
   socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];

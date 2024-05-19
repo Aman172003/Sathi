@@ -11,6 +11,7 @@ import { DiRuby } from "react-icons/di";
 import { DiRust } from "react-icons/di";
 import { DiDart } from "react-icons/di";
 import ACTIONS from "../actions";
+import Footer from "./Footer";
 import {
   Navigate,
   useLocation,
@@ -92,6 +93,11 @@ const EditorPage = () => {
       socketRef.current.on(ACTIONS.LANG_CHANGE, ({ language }) => {
         toast.success(`Language is set to ${language}`);
         setLang(language);
+      });
+
+      socketRef.current.on(ACTIONS.DISPLAY_OUTPUT, ({ output }) => {
+        // Update the UI to display the received output
+        setInput(output);
       });
 
       // socketRef.current.on(ACTIONS.SYNC_CODE, ({ output: input }) => {
@@ -192,8 +198,9 @@ const EditorPage = () => {
       const output = result.output;
       outputClicked();
       const currentTime = new Date().toLocaleTimeString();
-      const outputWithUsername = `${output}\n \n👉🏻 Last executed by ${location.state?.username} at ${currentTime}`;
-      document.getElementById("input").value = outputWithUsername;
+      const finalOutput = `${output}\n \n👉🏻 Last executed by ${location.state?.username} at ${currentTime}`;
+      socketRef.current.emit(ACTIONS.RUN_CODE, { roomId, output: finalOutput });
+      document.getElementById("input").value = finalOutput;
       toast.dismiss();
     } catch (error) {
       toast.dismiss();
@@ -427,7 +434,7 @@ const EditorPage = () => {
                 id="input"
                 value={input}
                 onChange={onInputChange}
-                className="inputArea textarea-style w-full bg-[#3d3d3d] outline-none h-full p-2 text-white border-r border-zinc-400"
+                className="inputArea textarea-style w-full bg-[#0a0e13] outline-none h-full p-2 text-white border-r border-zinc-400"
                 placeholder="Enter your input here"
               ></textarea>
             </div>
@@ -441,6 +448,7 @@ const EditorPage = () => {
         username={location.state?.username}
         clients={clients}
       />
+      <Footer />
     </div>
   );
 };
