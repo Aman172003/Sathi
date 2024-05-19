@@ -21,6 +21,7 @@ import {
 const EditorPage = () => {
   // useRef use krke nye component render hone pe bhi values persiist krti hai
   const socketRef = useRef(null);
+
   const codeRef = useRef(null);
   const location = useLocation();
   const outputRef = useRef(null);
@@ -73,10 +74,10 @@ const EditorPage = () => {
           setClients(clients);
           // jo bho code texteditor me hoga wo nye client ko bhi dikhange
           // server pe req maar rhe hai ki cuurent socket ko prev code dikahna hai
-          socketRef.current.emit(ACTIONS.SYNC_CODE, {
-            code: codeRef.current,
-            socketId,
-          });
+          // socketRef.current.emit(ACTIONS.SYNC_CODE, {
+          //   code: codeRef.current,
+          //   socketId,
+          // });
         }
       );
       //Listeneing for disconnected
@@ -87,6 +88,15 @@ const EditorPage = () => {
           return prev.filter((client) => client.socketId !== socketId);
         });
       });
+
+      socketRef.current.on(ACTIONS.LANG_CHANGE, ({ language }) => {
+        toast.success(`Language is set to ${language}`);
+        setLang(language);
+      });
+
+      // socketRef.current.on(ACTIONS.SYNC_CODE, ({ output: input }) => {
+      //   setInput(input);
+      // });
     };
 
     init();
@@ -150,6 +160,10 @@ const EditorPage = () => {
 
   const onInputChange = (e) => {
     setInput(e.target.value);
+    socketRef.current.emit(ACTIONS.SYNC_OUTPUT, {
+      roomId,
+      output: e.target.value,
+    });
   };
 
   const runCode = async () => {
@@ -177,7 +191,9 @@ const EditorPage = () => {
       console.log(result);
       const output = result.output;
       outputClicked();
-      document.getElementById("input").value = output;
+      const currentTime = new Date().toLocaleTimeString();
+      const outputWithUsername = `${output}\n \n👉🏻 Last executed by ${location.state?.username} at ${currentTime}`;
+      document.getElementById("input").value = outputWithUsername;
       toast.dismiss();
     } catch (error) {
       toast.dismiss();
@@ -188,12 +204,14 @@ const EditorPage = () => {
   };
   const handleClick = (language) => {
     setLang(language);
-    console.log(language);
+    toast.success(`Language is set to ${language}`);
+    socketRef.current.emit(ACTIONS.LANG_CHANGE, { roomId, language });
   };
 
   const onImgClick = () => {
     reactNavigator("/");
   };
+
   return (
     <div className="mainWrap h-screen relative">
       <div className="bg-black p-4 text-[#fff] flex justify-between items-center md:gap-16">

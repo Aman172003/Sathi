@@ -1,16 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
 import ACTIONS from "../actions";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  getDocs,
+  writeBatch,
+} from "firebase/firestore";
+import { db } from "../firebase/Config";
 
 const Chat = ({ socketRef, roomId, username }) => {
+  const endRef = useRef();
   const [messages, setMessages] = useState([]);
   const inputRef = useRef(null);
   const [unseenMessageCount, setUnseenMessageCount] = useState(0);
   const chatFormContainerRef = useRef(null);
+  const messageRef = collection(db, `messages-${roomId}`);
+
+  const deleteCollection = async () => {
+    try {
+      const q = query(messageRef);
+      const snapshot = await getDocs(q);
+      const batch = writeBatch(db);
+      snapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      console.log(
+        `Firestore collection messages-${roomId} deleted successfully.`
+      );
+    } catch (error) {
+      console.error("Error deleting collection:", error);
+    }
+  };
 
   const openChatWindow = () => {
     if (chatFormContainerRef.current) {
       chatFormContainerRef.current.style.display = "block";
       setUnseenMessageCount(0); // Reset unseen message count when chat is opened
+      endRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -28,7 +58,7 @@ const Chat = ({ socketRef, roomId, username }) => {
 
   const senderColorMap = {};
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const messageContent = inputRef.current.value.trim();
 
     if (messageContent === "") {
@@ -41,8 +71,14 @@ const Chat = ({ socketRef, roomId, username }) => {
       time: currentTime,
       sender: username,
     };
-    console.log(message);
     setMessages((prevMessages) => [...prevMessages, message]);
+
+    await addDoc(messageRef, {
+      text: messageContent,
+      createdAt: new Date(),
+      user: username,
+    });
+
     // Emit message to server via socket
     socketRef.current.emit(ACTIONS.SEND_MESSAGE, { roomId, message });
 
@@ -74,6 +110,11 @@ const Chat = ({ socketRef, roomId, username }) => {
   useEffect(() => {
     if (!socketRef.current) return;
 
+    socketRef.current.on("disconnect", () => {
+      // Trigger function to delete Firestore collection
+      deleteCollection();
+    });
+
     // Listen for incoming messages
     socketRef.current.on(ACTIONS.SEND_MESSAGE, ({ message }) => {
       if (!senderColorMap[message.sender]) {
@@ -92,6 +133,37 @@ const Chat = ({ socketRef, roomId, username }) => {
       socketRef.current.off(ACTIONS.SEND_MESSAGE);
     };
   }, [sendMessage]);
+
+  useEffect(() => {
+    // Query to fetch messages for the current room, ordered by creation time
+    const q = query(messageRef, orderBy("createdAt"));
+
+    // Real-time listener for Firestore
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const messagesFromFirestore = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        const message = {
+          content: data.text,
+          time: getCurrentTime(new Date(data.createdAt.seconds * 1000)),
+          sender: data.user,
+        };
+        if (!senderColorMap[message.sender]) {
+          senderColorMap[message.sender] = getRandomColor();
+        }
+        message.color = senderColorMap[message.sender];
+        return message;
+      });
+
+      setMessages(messagesFromFirestore);
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, [roomId]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
@@ -150,6 +222,7 @@ const Chat = ({ socketRef, roomId, username }) => {
                 </div>
               ))
             )}
+            <div ref={endRef}></div>
           </div>
 
           <div className="flex h-12 mb-4 px-[14px]">
