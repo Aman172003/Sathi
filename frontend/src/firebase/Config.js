@@ -3,17 +3,16 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDh0DyD2nFVU1gQ9odb15T6F0LwQMKOVK4",
-  authDomain: "sathi-845dd.firebaseapp.com",
-  databaseURL: "https://sathi-845dd-default-rtdb.firebaseio.com",
-  projectId: "sathi-845dd",
-  storageBucket: "sathi-845dd.appspot.com",
-  messagingSenderId: "384743641928",
-  appId: "1:384743641928:web:a0ebc1e370898ed14f597d",
-  measurementId: "G-CNY41DS4KQ",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 const app = initializeApp(firebaseConfig);
-const db =  getFirestore(app);
+const db = getFirestore(app);
 
-export {db}
-
+export { db };

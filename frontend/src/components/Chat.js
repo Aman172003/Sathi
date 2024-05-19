@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/Config";
 
-const Chat = ({ socketRef, roomId, username }) => {
+const Chat = ({ socketRef, roomId, username, clients }) => {
   const endRef = useRef();
   const [messages, setMessages] = useState([]);
   const inputRef = useRef(null);
@@ -19,21 +19,25 @@ const Chat = ({ socketRef, roomId, username }) => {
   const chatFormContainerRef = useRef(null);
   const messageRef = collection(db, `messages-${roomId}`);
 
-  const deleteCollection = async () => {
-    try {
-      const q = query(messageRef);
-      const snapshot = await getDocs(q);
-      const batch = writeBatch(db);
-      snapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-      await batch.commit();
-      console.log(
-        `Firestore collection messages-${roomId} deleted successfully.`
-      );
-    } catch (error) {
-      console.error("Error deleting collection:", error);
-    }
+  const deleteCollectionAfter8Hours = () => {
+    const eightHoursInMillis = 8 * 60 * 60 * 1000; // 6 hours in milliseconds
+
+    setTimeout(async () => {
+      try {
+        const q = query(messageRef);
+        const snapshot = await getDocs(q);
+        const batch = writeBatch(db);
+        snapshot.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
+        console.log(
+          `Firestore collection messages-${roomId} deleted successfully after 8 hours.`
+        );
+      } catch (error) {
+        console.error("Error deleting collection:", error);
+      }
+    }, eightHoursInMillis);
   };
 
   const openChatWindow = () => {
@@ -109,12 +113,7 @@ const Chat = ({ socketRef, roomId, username }) => {
 
   useEffect(() => {
     if (!socketRef.current) return;
-
-    socketRef.current.on("disconnect", () => {
-      // Trigger function to delete Firestore collection
-      deleteCollection();
-    });
-
+    deleteCollectionAfter8Hours();
     // Listen for incoming messages
     socketRef.current.on(ACTIONS.SEND_MESSAGE, ({ message }) => {
       if (!senderColorMap[message.sender]) {
@@ -132,12 +131,11 @@ const Chat = ({ socketRef, roomId, username }) => {
       // Clean up event listener when component unmounts
       socketRef.current.off(ACTIONS.SEND_MESSAGE);
     };
-  }, [sendMessage]);
+  }, []);
 
   useEffect(() => {
     // Query to fetch messages for the current room, ordered by creation time
     const q = query(messageRef, orderBy("createdAt"));
-
     // Real-time listener for Firestore
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const messagesFromFirestore = snapshot.docs.map((doc) => {

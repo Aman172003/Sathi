@@ -439,6 +439,7 @@ const EditorPage = () => {
         roomId={roomId}
         socketRef={socketRef}
         username={location.state?.username}
+        clients={clients}
       />
     </div>
   );

@@ -8,9 +8,7 @@ import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../actions";
 import {
   collection,
-  onSnapshot,
   query,
-  orderBy,
   getDocs,
   writeBatch,
   setDoc,
@@ -23,21 +21,24 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const codeRef = collection(db, `code-${roomId}`);
   const [initialCodeLoaded, setInitialCodeLoaded] = useState(false);
 
-  const deleteCollection = async () => {
-    try {
-      const q = query(codeRef);
-      const snapshot = await getDocs(q);
-      const batch = writeBatch(db);
-      snapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-      await batch.commit();
-      console.log(
-        `Firestore collection messages-${roomId} deleted successfully.`
-      );
-    } catch (error) {
-      console.error("Error deleting collection:", error);
-    }
+  const deleteCollectionAfter8Hours = () => {
+    const eightHoursInMillis = 8 * 60 * 60 * 1000; // 6 hours in milliseconds
+    setTimeout(async () => {
+      try {
+        const q = query(codeRef);
+        const snapshot = await getDocs(q);
+        const batch = writeBatch(db);
+        snapshot.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
+        console.log(
+          `Firestore collection code-${roomId} deleted successfully after 8 hours.`
+        );
+      } catch (error) {
+        console.error("Error deleting collection:", error);
+      }
+    }, eightHoursInMillis);
   };
 
   useEffect(() => {
@@ -74,6 +75,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
   }, []); // Empty dependency array ensures the effect runs only once after initial render
 
   useEffect(() => {
+    deleteCollectionAfter8Hours();
     // Fetch initial code from Firestore
     async function fetchInitialCode() {
       try {
@@ -100,10 +102,6 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         if (code != null) {
           editorRef.current.setValue(code);
         }
-      });
-      socketRef.current.on("disconnect", () => {
-        // Trigger function to delete Firestore collection
-        deleteCollection();
       });
     }
     // jo changes hai unko unsubscribe bhi krna hota hai
