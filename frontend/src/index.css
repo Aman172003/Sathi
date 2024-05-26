@@ -112,3 +112,32 @@ body {
 .open-btn:hover {
   opacity: 0.9;
 }
+
+.msg-container::-webkit-scrollba,
+.code-editor::-webkit-scrollba {
+  width: 8px; /* width for vertical scrollbar */
+  height: 8px; /* height for horizontal scrollbar */
+}
+
+.msg-container::-webkit-scrollbar-thumb,
+.code-editor::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* scrollbar color */
+  border-radius: 10px; /* rounded corners */
+}
+
+.msg-container::-webkit-scrollbar-thumb:hover,
+.code-editor::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.7); /* scrollbar color on hover */
+}
+
+.msg-container::-webkit-scrollbar-track,
+.code-editor::-webkit-scrollbar-track {
+  background: transparent; /* track background */
+}
+
+/* For Firefox */
+.msg-container,
+.code-editor {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
+}

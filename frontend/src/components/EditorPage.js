@@ -381,7 +381,7 @@ const EditorPage = () => {
           </ul>
         </div>
         <div className="flex flex-wrap w-full">
-          <div className="flex flex-col overflow-auto md:w-2/3 w-full h-screen clear-both">
+          <div className="code-editor flex flex-col overflow-auto md:w-2/3 w-full h-screen clear-both">
             <div className="flex h-14 text-xl text-white bg-black justify-between items-center p-2 border border-l-0 border-zinc-400">
               <div className="">Code</div>
               <div>
