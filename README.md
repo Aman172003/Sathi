@@ -11,4 +11,17 @@
 #### 👉🏻 Socket.io
 #### 👉🏻 Express.js
 #### 👉🏻 Node.js
+#### 👉🏻 Online-Code-Compiler Api
+
+## Features
+#### 👉🏻 User-Friendly Interface
+#### 👉🏻 Clients can join a room using a room ID and username.
+#### 👉🏻 Multiple clients can join the same room by sharing the room ID.
+#### 👉🏻 Multiple clients can concurrently change the code in the editor, as all clients are synchronized in the same room.
+#### 👉🏻 Changes will be reflected to all clients joined in a room.
+#### 👉🏻 All clients can also chat with each other in a chat box.
+#### 👉🏻 There are multiple options to select any programming language.
+#### 👉🏻 Clients can run the code and get the output directly on the code editor.
+#### 👉🏻 All clients will be able to see the output and act accordingly.
+
 
