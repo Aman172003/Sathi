@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import homeImage from "../media/bc.jpg";
 import { Typed } from "react-typed";
 
 const Home = () => {
@@ -76,7 +75,7 @@ const Home = () => {
     <div
       className="h-screen flex justify-center items-center text-[#fff] bg-cover "
       style={{
-        backgroundImage: `url(${homeImage})`,
+        backgroundImage: `url(${"https://res.cloudinary.com/dwoqqbfk6/image/upload/v1720692518/Sathi/bc_ye7mty.jpg"})`,
       }}
     >
       <div className="w-1/2">
