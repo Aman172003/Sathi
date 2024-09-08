@@ -175,17 +175,36 @@ const EditorPage = () => {
   const runCode = async () => {
     outputRef.current.click();
     toast.loading("Running Code....");
-    const url = "https://online-code-compiler.p.rapidapi.com/v1/";
+    const url = 'https://code-compiler10.p.rapidapi.com/';
     const options = {
       method: "POST",
       headers: {
-        "content-type": "application/json",
-        "X-RapidAPI-Key": "80dc85687amshbc4b976aae3b8b7p1470ccjsn092c86007642",
-        "X-RapidAPI-Host": "online-code-compiler.p.rapidapi.com",
+        'x-rapidapi-key': '80dc85687amshbc4b976aae3b8b7p1470ccjsn092c86007642',
+        'x-rapidapi-host': 'code-compiler10.p.rapidapi.com',
+        'Content-Type': 'application/json',
+        'x-compile': 'rapidapi'
       },
       body: JSON.stringify({
-        language: lang,
-        version: "latest",
+        langEnum: [
+          "php",
+          "python",
+          "c",
+          "c_cpp",
+          "csharp",
+          "kotlin",
+          "golang",
+          "r",
+          "java",
+          "typescript",
+          "nodejs",
+          "ruby",
+          "perl",
+          "swift",
+          "fortran",
+          "bash"
+        ],
+        lang: lang,
+        // version: "latest",
         code: code,
         input: input,
       }),
@@ -291,9 +310,9 @@ const EditorPage = () => {
             <div className="liItems">
               <li
                 className={`button ${
-                  lang === "cpp17" ? "bg-gray-600" : ""
+                  lang === "c_cpp" ? "bg-gray-600" : ""
                 } rounded p-2`}
-                onClick={() => handleClick("cpp17")}
+                onClick={() => handleClick("c_cpp")}
               >
                 <SiCplusplus color="white" size={30} />
               </li>
@@ -311,9 +330,9 @@ const EditorPage = () => {
             <div className="liItems">
               <li
                 className={`button ${
-                  lang === "python3" ? "bg-gray-600" : ""
+                  lang === "python" ? "bg-gray-600" : ""
                 } rounded p-2`}
-                onClick={() => handleClick("python3")}
+                onClick={() => handleClick("python")}
               >
                 <FaPython color="white" size={30} />
               </li>
@@ -331,9 +350,9 @@ const EditorPage = () => {
             <div className="liItems">
               <li
                 className={`button ${
-                  lang === "javascript" ? "bg-gray-600" : ""
+                  lang === "typescript" ? "bg-gray-600" : ""
                 } rounded p-2`}
-                onClick={() => handleClick("javascript")}
+                onClick={() => handleClick("typescript")}
               >
                 <FaJs color="white" size={30} />
               </li>
@@ -341,9 +360,9 @@ const EditorPage = () => {
             <div className="liItems">
               <li
                 className={`button ${
-                  lang === "go" ? "bg-gray-600" : ""
+                  lang === "golang" ? "bg-gray-600" : ""
                 } rounded p-2`}
-                onClick={() => handleClick("go")}
+                onClick={() => handleClick("golang")}
               >
                 <FaGofore color="white" size={30} />
               </li>
