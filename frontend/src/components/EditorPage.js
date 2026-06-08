@@ -33,6 +33,9 @@ const EditorPage = () => {
   const [lang, setLang] = useState("cpp17");
   const [code, setCode] = useState("");
   const [input, setInput] = useState("");
+  const [aiAnalysis, setAiAnalysis] = useState("");
+  const [aiExplanation, setAiExplanation] = useState("");
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const toggleButton = () => {
     setItems(!items);
@@ -98,6 +101,20 @@ const EditorPage = () => {
       socketRef.current.on(ACTIONS.DISPLAY_OUTPUT, ({ output }) => {
         // Update the UI to display the received output
         setInput(output);
+      });
+
+      // AI: Listen for error analysis results
+      socketRef.current.on(ACTIONS.ERROR_ANALYSIS_RESULT, ({ analysis }) => {
+        setAiAnalysis(analysis);
+        setShowAiPanel(true);
+        toast.success("AI analysis ready! Check the AI panel.");
+      });
+
+      // AI: Listen for code explanation results
+      socketRef.current.on(ACTIONS.CODE_EXPLANATION_RESULT, ({ explanation }) => {
+        setAiExplanation(explanation);
+        setShowAiPanel(true);
+        toast.success("Code explanation ready! Check the AI panel.");
       });
 
       // socketRef.current.on(ACTIONS.SYNC_CODE, ({ output: input }) => {
@@ -236,6 +253,35 @@ const EditorPage = () => {
 
   const onImgClick = () => {
     reactNavigator("/");
+  };
+
+  // AI: Analyze error from output
+  const analyzeErrorOutput = () => {
+    if (!input.trim()) {
+      toast.error("No output to analyze");
+      return;
+    }
+    toast.loading("Analyzing error with AI...");
+    socketRef.current.emit(ACTIONS.ANALYZE_ERROR, {
+      roomId,
+      error: input,
+      language: lang,
+      code: code,
+    });
+  };
+
+  // AI: Explain selected code
+  const explainSelectedCode = () => {
+    if (!code.trim()) {
+      toast.error("No code to explain");
+      return;
+    }
+    toast.loading("Explaining code with AI...");
+    socketRef.current.emit(ACTIONS.EXPLAIN_CODE, {
+      roomId,
+      code: code,
+      language: lang,
+    });
   };
 
   return (
@@ -403,7 +449,21 @@ const EditorPage = () => {
           <div className="code-editor flex flex-col overflow-auto md:w-2/3 w-full h-screen clear-both">
             <div className="flex h-14 text-xl text-white bg-black justify-between items-center p-2 border border-l-0 border-zinc-400">
               <div className="">Code</div>
-              <div>
+              <div className="flex gap-2">
+                <button
+                  onClick={explainSelectedCode}
+                  className="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700 transition duration-300"
+                  title="Explain the code with AI"
+                >
+                  🤖 Explain
+                </button>
+                <button
+                  onClick={analyzeErrorOutput}
+                  className="bg-orange-600 text-white px-2 py-1 rounded text-sm hover:bg-orange-700 transition duration-300"
+                  title="Analyze errors with AI"
+                >
+                  🔍 Debug
+                </button>
                 <label
                   onClick={runCode}
                   id="runLabel"
@@ -460,6 +520,39 @@ const EditorPage = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Panel */}
+      {showAiPanel && (aiAnalysis || aiExplanation) && (
+        <div className="fixed bottom-32 right-4 w-96 bg-gray-800 border border-cyan-500 rounded-lg shadow-2xl z-40 max-h-80 flex flex-col">
+          <div className="flex justify-between items-center bg-gray-900 p-3 border-b border-cyan-500">
+            <h3 className="text-white font-bold">🤖 AI Assistant</h3>
+            <button
+              onClick={() => {
+                setShowAiPanel(false);
+                setAiAnalysis("");
+                setAiExplanation("");
+              }}
+              className="text-white hover:text-red-400 text-xl"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="overflow-y-auto flex-1 p-4 text-white text-sm">
+            {aiAnalysis && (
+              <div>
+                <p className="text-cyan-400 font-bold mb-2">Error Analysis:</p>
+                <p className="whitespace-pre-wrap">{aiAnalysis}</p>
+              </div>
+            )}
+            {aiExplanation && (
+              <div>
+                <p className="text-cyan-400 font-bold mb-2">Code Explanation:</p>
+                <p className="whitespace-pre-wrap">{aiExplanation}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <Chat
         roomId={roomId}

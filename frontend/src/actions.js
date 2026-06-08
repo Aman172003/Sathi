@@ -10,5 +10,9 @@ const ACTIONS = {
   SYNC_OUTPUT: "sync-output",
   RUN_CODE: "run-code",
   DISPLAY_OUTPUT: "display-output",
+  ANALYZE_ERROR: "analyze-error",
+  ERROR_ANALYSIS_RESULT: "error-analysis-result",
+  EXPLAIN_CODE: "explain-code",
+  CODE_EXPLANATION_RESULT: "code-explanation-result",
 };
 module.exports = ACTIONS;
