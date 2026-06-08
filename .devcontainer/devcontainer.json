@@ -1,0 +1,26 @@
+{
+  "name": "Sathi Dev Container",
+  "image": "node:25-alpine",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "eamodio.gitlens",
+        "ms-vscode.live-server",
+        "github.copilot",
+        "github.copilot-chat",
+        "anthropic.claude-code",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  },
+  "postCreateCommand": "apk add --no-cache git && npm install -g nodemon && sh .devcontainer/lifecycle_scripts/post_create.sh",
+  "remoteUser": "root",
+  "runArgs": [
+    "--name", "${localWorkspaceFolderBasename}"
+  ]
+}
