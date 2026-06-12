@@ -10,9 +10,10 @@ const ACTIONS = {
   SYNC_OUTPUT: "sync-output",
   RUN_CODE: "run-code",
   DISPLAY_OUTPUT: "display-output",
-  ANALYZE_ERROR: "analyze-error",
-  ERROR_ANALYSIS_RESULT: "error-analysis-result",
-  EXPLAIN_CODE: "explain-code",
-  CODE_EXPLANATION_RESULT: "code-explanation-result",
+  // AI Agent Chat
+  AGENT_MESSAGE: "agent-message",
+  AGENT_RESPONSE: "agent-response",
+  AGENT_RESPONSE_STREAM: "agent-response-stream",
+  AGENT_RESPONSE_END: "agent-response-end",
 };
 module.exports = ACTIONS;
