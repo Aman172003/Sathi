@@ -1,6 +1,5 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const express = require("express");
 const app = express();
@@ -10,10 +9,16 @@ var cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const ACTIONS = require("../frontend/src/actions");
-const path = require("path");
+const { analyzeError, explainCode } = require("./aiHelpers");
+const { streamMessage } = require("./agent");
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use(cors());
 // jab bhi humare server par request aaega to  turant build folder ka html file render ho jaega
@@ -89,6 +94,91 @@ io.on("connection", (socket) => {
   socket.on(ACTIONS.RUN_CODE, ({ roomId, output }) => {
     // Emit the output to all clients in the room
     socket.in(roomId).emit(ACTIONS.DISPLAY_OUTPUT, { output });
+  });
+
+  // AI: Analyze error and provide debugging suggestions
+  socket.on(ACTIONS.ANALYZE_ERROR, async ({ roomId, error, language, code }) => {
+    console.log("Received ANALYZE_ERROR request for room:", roomId);
+    try {
+      console.log("Calling analyzeError with language:", language);
+      const analysis = await analyzeError(error, language, code);
+      console.log("Got analysis, sending to room:", roomId);
+      // Send to all clients in the room (including sender)
+      io.to(roomId).emit(ACTIONS.ERROR_ANALYSIS_RESULT, {
+        analysis,
+        error,
+      });
+    } catch (err) {
+      console.error("Error in ANALYZE_ERROR:", err);
+      io.to(roomId).emit(ACTIONS.ERROR_ANALYSIS_RESULT, {
+        analysis: "Failed to analyze error. Please try again. Error: " + err.message,
+        error,
+      });
+    }
+  });
+
+  // AI: Explain selected code
+  socket.on(ACTIONS.EXPLAIN_CODE, async ({ roomId, code, language }) => {
+    console.log("Received EXPLAIN_CODE request for room:", roomId);
+    try {
+      console.log("Calling explainCode with language:", language);
+      const explanation = await explainCode(code, language);
+      console.log("Got explanation, sending to room:", roomId);
+      // Send to all clients in the room (including sender)
+      io.to(roomId).emit(ACTIONS.CODE_EXPLANATION_RESULT, {
+        explanation,
+        code,
+      });
+    } catch (err) {
+      console.error("Error in EXPLAIN_CODE:", err);
+      io.to(roomId).emit(ACTIONS.CODE_EXPLANATION_RESULT, {
+        explanation: "Failed to explain code. Please try again. Error: " + err.message,
+        code,
+      });
+    }
+  });
+
+  // AI Agent Chat Handler
+  socket.on(ACTIONS.AGENT_MESSAGE, async ({ roomId, message, code, language, output, users }) => {
+    console.log("Received AGENT_MESSAGE from room:", roomId);
+    try {
+      // Build context for the agent
+      const context = {
+        roomId,
+        code,
+        language,
+        output,
+        users,
+      };
+
+      // Stream the response
+      const agentStream = streamMessage(message, context);
+
+      let fullResponse = "";
+      for await (const chunk of agentStream) {
+        if (chunk) {
+          fullResponse += chunk;
+          // Emit chunks for streaming UI
+          io.to(roomId).emit(ACTIONS.AGENT_RESPONSE_STREAM, {
+            chunk: chunk,
+            socketId: socket.id,
+          });
+        }
+      }
+
+      // Signal end of stream
+      io.to(roomId).emit(ACTIONS.AGENT_RESPONSE_END, {
+        fullResponse,
+        socketId: socket.id,
+      });
+    } catch (err) {
+      console.error("Error in AGENT_MESSAGE:", err);
+      io.to(roomId).emit(ACTIONS.AGENT_RESPONSE, {
+        response: "Error: " + err.message,
+        socketId: socket.id,
+        error: true,
+      });
+    }
   });
 
   // below tab run hoga jab koi client room chhod ke chala jaaye ya browser band kr de
