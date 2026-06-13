@@ -72,7 +72,8 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
       });
     }
     init();
-  }, []); // Empty dependency array ensures the effect runs only once after initial render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentional: init runs once on mount
 
   useEffect(() => {
     deleteCollectionAfter8Hours();
@@ -97,8 +98,9 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     }
 
     // server se bheja hua code saare clients recieve krenge
-    if (socketRef.current) {
-      socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
+    const socket = socketRef.current;
+    if (socket) {
+      socket.on(ACTIONS.CODE_CHANGE, ({ code }) => {
         if (code != null) {
           editorRef.current.setValue(code);
         }
@@ -106,9 +108,10 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     }
     // jo changes hai unko unsubscribe bhi krna hota hai
     return () => {
-      if (socketRef.current) socketRef.current.off(ACTIONS.CODE_CHANGE);
+      if (socket) socket.off(ACTIONS.CODE_CHANGE);
     };
-  }, [initialCodeLoaded, socketRef.current]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialCodeLoaded]);
 
   const saveCodeToFirestore = async (code) => {
     try {

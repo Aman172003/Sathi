@@ -112,10 +112,11 @@ const Chat = ({ socketRef, roomId, username, clients }) => {
   };
 
   useEffect(() => {
-    if (!socketRef.current) return;
+    const socket = socketRef.current;
+    if (!socket) return;
     deleteCollectionAfter8Hours();
     // Listen for incoming messages
-    socketRef.current.on(ACTIONS.SEND_MESSAGE, ({ message }) => {
+    socket.on(ACTIONS.SEND_MESSAGE, ({ message }) => {
       if (!senderColorMap[message.sender]) {
         senderColorMap[message.sender] = getRandomColor();
       }
@@ -129,8 +130,9 @@ const Chat = ({ socketRef, roomId, username, clients }) => {
 
     return () => {
       // Clean up event listener when component unmounts
-      socketRef.current.off(ACTIONS.SEND_MESSAGE);
+      socket.off(ACTIONS.SEND_MESSAGE);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -157,6 +159,7 @@ const Chat = ({ socketRef, roomId, username, clients }) => {
 
     // Cleanup listener on unmount
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   useEffect(() => {
