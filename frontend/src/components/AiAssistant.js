@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import ACTIONS from "../actions";
 
 const AiAssistant = ({
