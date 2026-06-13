@@ -122,13 +122,12 @@ const Home = () => {
             </button>
             <span className="mt-[20px] mx-auto text-[14px] font-medium">
               if you don't have an invite then create &nbsp;
-              <a
+              <button
                 onClick={createNewRoom}
-                href=""
-                className="text-[#09fcf6] no-underline border-b border-solid border-[#09fcf6] transition-all duration-300 ease-in-out hover:text-[#09cffc] hover:border-[#09cffc]"
+                className="text-[#09fcf6] no-underline border-b border-solid border-[#09fcf6] transition-all duration-300 ease-in-out hover:text-[#09cffc] hover:border-[#09cffc] bg-transparent border-t-0 border-l-0 border-r-0 p-0 cursor-pointer"
               >
                 new room
-              </a>
+              </button>
             </span>
           </div>
         </div>

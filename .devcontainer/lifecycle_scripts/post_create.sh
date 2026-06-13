@@ -21,7 +21,7 @@ if [ -d "backend" ]; then
   cd backend
   npm install
   echo "Fixing backend vulnerabilities..."
-  npm audit fix
+  npm audit fix || true
   cd ..
 fi
 
@@ -31,7 +31,7 @@ if [ -d "frontend" ]; then
   cd frontend
   npm install
   echo "Fixing frontend vulnerabilities..."
-  npm audit fix
+  npm audit fix || true
   cd ..
 fi
 

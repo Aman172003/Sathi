@@ -116,7 +116,8 @@ const EditorPage = () => {
         socketRef.current.disconnect();
       }
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentional: socket init runs once on mount
 
   async function copyRoomId() {
     try {

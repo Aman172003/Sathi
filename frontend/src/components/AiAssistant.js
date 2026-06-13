@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import ACTIONS from "../actions";
-import toast from "react-hot-toast";
 
 const AiAssistant = ({
   socketRef,
@@ -26,10 +25,11 @@ const AiAssistant = ({
 
   // Listen for AI assistant responses
   useEffect(() => {
-    if (!socketRef.current) return;
+    const socket = socketRef.current;
+    if (!socket) return;
 
     // Handle streamed chunks
-    socketRef.current.on(ACTIONS.AGENT_RESPONSE_STREAM, ({ chunk, socketId }) => {
+    socket.on(ACTIONS.AGENT_RESPONSE_STREAM, ({ chunk, socketId }) => {
       setMessages((prev) => {
         const lastMsg = prev[prev.length - 1];
         if (
@@ -49,24 +49,22 @@ const AiAssistant = ({
     });
 
     // Handle end of stream
-    socketRef.current.on(ACTIONS.AGENT_RESPONSE_END, ({ fullResponse, socketId }) => {
+    socket.on(ACTIONS.AGENT_RESPONSE_END, ({ fullResponse, socketId }) => {
       setIsStreaming(false);
       toast.success("AI response complete!");
     });
 
     return () => {
-      socketRef.current.off(ACTIONS.AGENT_RESPONSE_STREAM);
-      socketRef.current.off(ACTIONS.AGENT_RESPONSE_END);
+      socket.off(ACTIONS.AGENT_RESPONSE_STREAM);
+      socket.off(ACTIONS.AGENT_RESPONSE_END);
     };
-  }, [socketRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
 
-    if (!inputValue.trim()) {
-      toast.error("Please enter a message");
-      return;
-    }
+    if (!inputValue.trim()) return;
 
     // Add user message to UI
     setMessages((prev) => [
@@ -87,6 +85,7 @@ const AiAssistant = ({
       language,
       output,
       users: clients?.map((c) => c.username) || [],
+      history: messages.map((m) => ({ role: m.role, content: m.content })),
     });
 
     setInputValue("");
@@ -99,100 +98,92 @@ const AiAssistant = ({
 
   return (
     <>
-      {/* Toggle Button */}
+      {/* Toggle Button — pill style matching Chat, positioned to the left of Chat */}
       <button
+        className="open-btn bg-[#09fcf6] text-black px-[9px] py-[12px] border rounded-[50px] border-none cursor-pointer fixed text-[16px] mr-[14px] flex items-center justify-center transition-all duration-300 bottom-6 right-[194px] md:right-[324px] md:w-[280px] w-[150px]"
         onClick={toggleAssistant}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full w-14 h-14 shadow-lg hover:shadow-xl transform hover:scale-110 transition-transform flex items-center justify-center text-xl font-bold z-40"
-        title="AI Assistant"
       >
-        🤖
+        🤖 AI
+        {isStreaming && (
+          <span style={{ color: "purple", marginLeft: "5px" }}>●</span>
+        )}
       </button>
 
-      {/* Assistant Modal/Popup */}
-      {showAssistant && (
-        <div
-          ref={assistantContainerRef}
-          className="fixed bottom-24 right-6 w-96 h-96 bg-white rounded-lg shadow-2xl flex flex-col z-50 border-2 border-purple-500"
-        >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
-            <h3 className="font-bold text-lg">🤖 AI Assistant</h3>
-            <button
+      {/* Popup — dark theme matching Chat popup */}
+      <div
+        className="fixed bottom-4 right-[194px] md:right-[324px] z-10 w-[300px] md:w-[320px]"
+        ref={assistantContainerRef}
+        style={{ display: showAssistant ? "block" : "none" }}
+      >
+        <div className="form-container flex flex-col items-stretch max-w-[400px]">
+          <div className="chat-window-head flex justify-between px-[16px] py-[14px]">
+            <h4 className="text-black font-[500] cursor-pointer">
+              🤖 AI Assistant
+            </h4>
+            <span
+              className="cursor-pointer text-black"
               onClick={toggleAssistant}
-              className="text-white hover:text-gray-200 text-2xl font-bold"
             >
-              ✕
-            </button>
+              <i className="fa fa-times"></i>
+            </span>
           </div>
 
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+          <div className="msg-container overflow-auto">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500 mt-8">
-                <p className="font-semibold">Hi, I'm your AI Assistant!</p>
-                <p className="text-sm mt-2">Ask me to explain code, debug errors, or answer questions about your code.</p>
-              </div>
+              <p className="text-[grey] text-sm">
+                Ask me to explain code, debug errors, or answer questions!
+              </p>
             ) : (
-              <div className="space-y-3">
-                {messages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex ${
-                      msg.role === "user" ? "justify-end" : "justify-start"
-                    }`}
+              messages.map((msg, idx) => (
+                <div key={idx} className="msg mb-4">
+                  <p
+                    className="text-xs text-white"
+                    style={{ maxWidth: "90%", wordWrap: "break-word" }}
                   >
-                    <div
-                      className={`max-w-xs px-4 py-2 rounded-lg ${
-                        msg.role === "user"
-                          ? "bg-blue-500 text-white rounded-br-none"
-                          : "bg-gray-200 text-gray-800 rounded-bl-none"
-                      }`}
+                    <strong
+                      style={{
+                        color: msg.role === "user" ? "#09fcf6" : "#a855f7",
+                      }}
                     >
-                      {msg.role === "assistant" && (
-                        <p className="text-xs font-semibold text-purple-600 mb-1">
-                          AI Assistant
-                        </p>
-                      )}
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                    </div>
-                  </div>
-                ))}
-                {isStreaming && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg rounded-bl-none">
-                      <span className="text-sm">Thinking...</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
+                      {msg.role === "user" ? username : "AI Assistant"}:
+                    </strong>{" "}
+                    {msg.content}
+                  </p>
+                </div>
+              ))
+            )}
+            {isStreaming && (
+              <div className="msg mb-4">
+                <p className="text-xs text-[grey]">AI is thinking...</p>
               </div>
             )}
+            <div ref={messagesEndRef}></div>
           </div>
 
-          {/* Input Area */}
-          <form
-            onSubmit={handleSendMessage}
-            className="border-t border-gray-200 p-3 bg-white rounded-b-lg flex gap-2"
-          >
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask me anything..."
-              disabled={isStreaming}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <button
-              type="submit"
-              disabled={isStreaming || !inputValue.trim()}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:bg-gray-400 transition-colors"
-            >
-              Send
-            </button>
-          </form>
+          <div className="flex h-12 mb-4 px-[14px]">
+            <div className="chat-box flex justify-between w-full overflow-hidden border border-solid rounded-[30px] border-[grey]">
+              <input
+                ref={inputRef}
+                className="w-[80%] p-1 h-[46px] pl-4 border-none rounded-[4px] focus:outline-none focus:bg-[#0a0e13] bg-[#0a0e13] text-white"
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask me anything..."
+                disabled={isStreaming}
+                onKeyUp={(e) => e.key === "Enter" && handleSendMessage(e)}
+              />
+              <button
+                type="button"
+                className="clickbtn"
+                onClick={handleSendMessage}
+                disabled={isStreaming}
+              >
+                <i className="fa fa-chevron-circle-right send-btn"></i>
+              </button>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
